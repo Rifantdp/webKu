@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    body{
+  width: 94%;
+}
+header{
+  background-color: black;
+  color: white;
+  padding: 5px;
+}
+header h6{
+  font-size: 30px;
+  margin: 5px;
+}
+.point{
+  width: 100%;
+}
+.point input{
+  width: 98%;
+}
+#tab{
+  border: black solid 1px;
+  width:100%;
+}
+#had{
+  background-color: black;
+  color: white;
+}
+
+.b1{
+  align-content: center;
+width: 50%;
+}
+.b2{
+  width: 30%;
+
+}
+.b3{
+  width: 20;
+  
+}
+#cost{
+  width: 98%;
+}
+#cname{
+  width: 98%;
+}
+#cprice{
+  width: 98%;
+}
+
+    </style>
+  </head>
+  <body>
+    <header>
+      <h6>
+        Form Penjualan
+      </h6>
+    </header>
+    <div class="conatainer">
+      <div class="point">
+        <input id="name" type="text">
+        <input id="price" type="number">
+        <div></div>
+        <button class="point" onclick="tambahItem()">Tambah</button>
+      </div>
+    </div>
+        <table id="tab">
+      <tr id="had">
+        <th class="b1" id="item">Nama Barang</th>
+        <th class="b2" id="harga">Harga</th>
+        <th class="b3" id="fun">Fungs</th>
+      </tr>
+      <tr id="had">
+        <th class="b1">jumlah</th>
+        <th class="b2" id="total"></th>
+        <th class="b3" ><button onclick="hapusAll()">HAPUS</button></th>
+      </tr>
+      <tr>
+        <td class="b1"><h3>BAYAR</h3></td>
+        <td class="b2"><input type="number" id="cost"></td>
+        <td class="b3"><button onclick="printStruk()">BAYAR</button></td>
+      </tr>
+    </table>
+    <div class="struk" id="struk">
+      <table id="prStruk"></table>
+    </div>
+    <button onclick="window.print()">Print</button>
+    <script>
+      var x=1;
+      var table = document.getElementById("tab");
+      function buatTable(item,harga,work,indx) {
+        var row=table.insertRow(indx);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        cell1.innerHTML =item;
+        cell2.innerHTML =harga;
+        cell3.innerHTML =work;
+        x++;
+      }
+      var item=document.getElementById("name");
+      var harga=document.getElementById("price");
+      function tambahItem(){
+        buatTable(item.value,harga.value,'<button onclick="edit(this)">edit</button><button onclick="hapus(this)">hapus</button>',x);
+        hitung();
+      }
+      var total=document.getElementById("total");
+      function hitung(){
+        var jumlah=0;
+        for(var a=1;a<x;a++){
+          var nilai=table.rows[a].cells[1].innerHTML;
+          if(nilai==""){
+            nilai=0;
+          }
+          jumlah+=parseInt(nilai);
+        }
+        total.innerHTML=jumlah;
+      }
+      function hapus(r) {
+        var i = r.parentNode.parentNode.rowIndex;
+        document.getElementById("tab").deleteRow(i);
+        x--;
+        hitung();
+      }
+      function hapusAll(){
+        for(var a=x-1;a>0;a--){
+          document.getElementById("tab").deleteRow(a);
+          x--;
+        }
+        hitung();
+      }
+      function selesai(r){
+        var changeName=document.getElementById("cname");
+        var changePrice=document.getElementById("cprice");
+          var i = r.parentNode.parentNode.rowIndex;
+        table.deleteRow(i);
+        x--;
+        buatTable(changeName.value,changePrice.value,'<button onclick="edit(this)">edit</button><button onclick="hapus(this)">hapus</button>',i)
+        hitung();
+      }
+      function edit(r){
+          var i = r.parentNode.parentNode.rowIndex;
+        table.deleteRow(i);
+        x--;
+        buatTable('<input id="cname" type="text">','<input id="cprice" type="number">','<button onclick="selesai(this)">Selesai</button><button onclick="hapus(this)">hapus</button>',i);
+      }
+      var tab2=document.getElementById("prStruk");
+      function cetak(a,b,c) {
+        var row=tab2.insertRow();
+        var cell1=row.insertCell(0);
+        var cell2=row.insertCell(1);
+          cell1.innerHTML=b;
+          cell2.innerHTML=c;
+      }
+      function printStruk(a){
+        var bayar=parseInt(document.getElementById("cost").value);
+        if(bayar<parseInt(total.innerHTML)){
+          alert("Maaf Pembayaran Kurang!");
+        }else{
+          for(var a=1;a<=x;a++){
+            cetak(a,table.rows[a].cells[0].innerHTML,table.rows[a].cells[1].innerHTML);
+          }
+          cetak(a+1,"Bayar",bayar);
+          cetak(a+2,"Kembalian",bayar-parseInt(total.innerHTML));
+          
+        }
+      }
+    </script>
+  </body>
+</html>
